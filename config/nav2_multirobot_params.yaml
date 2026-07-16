@@ -1,0 +1,231 @@
+/**:
+  # NOTE: everything is wrapped under the /** wildcard namespace key.
+  # This is required by rcl_yaml_param_parser's documented format
+  # (<node_namespace_string>: <node_name>: ros__parameters: ...) for
+  # NAMESPACED nodes -- without it, simple top-level parameters (like
+  # global_frame, use_sim_time) still loaded fine, but deeply nested ones
+  # (FollowPath.critics, local_costmap's own `plugins` list) were silently
+  # dropped once a node had any ROS namespace at all (e.g. /robot1/...),
+  # causing "No critics defined for FollowPath" and costmap plugins
+  # falling back to Nav2's internal defaults. /** matches any namespace
+  # (including /robot1, /robot2, or none), so one shared file works for
+  # every robot.
+  bt_navigator:
+    ros__parameters:
+      use_sim_time: true
+      global_frame: global_odom
+      robot_base_frame: base_footprint
+      odom_topic: odom
+      goal_blackboard_id: goal
+      goals_blackboard_id: goals
+      path_blackboard_id: path
+
+  controller_server:
+    ros__parameters:
+      use_sim_time: true
+      controller_frequency: 20.0
+      min_x_velocity_threshold: 0.001
+      min_y_velocity_threshold: 0.5
+      min_theta_velocity_threshold: 0.001
+      failure_tolerance: 0.3
+      progress_checker_plugins: ["progress_checker"]
+      goal_checker_plugins: ["general_goal_checker"]
+      controller_plugins: ["FollowPath"]
+
+      progress_checker:
+        plugin: "nav2_controller::SimpleProgressChecker"
+        required_movement_radius: 0.5
+        movement_time_allowance: 10.0
+
+      general_goal_checker:
+        stateful: true
+        plugin: "nav2_controller::SimpleGoalChecker"
+        xy_goal_tolerance: 0.25
+        yaw_goal_tolerance: 0.25
+
+      FollowPath:
+        plugin: "dwb_core::DWBLocalPlanner"
+        debug_trajectory_details: true
+        min_vel_x: 0.0
+        min_vel_y: 0.0
+        max_vel_x: 0.26
+        max_vel_y: 0.0
+        max_vel_theta: 1.0
+        min_speed_xy: 0.0
+        max_speed_xy: 0.26
+        min_speed_theta: 0.0
+        acc_lim_x: 2.5
+        acc_lim_y: 0.0
+        acc_lim_theta: 3.2
+        decel_lim_x: -2.5
+        decel_lim_y: 0.0
+        decel_lim_theta: -3.2
+        vx_samples: 20
+        vy_samples: 5
+        vtheta_samples: 20
+        sim_time: 1.7
+        linear_granularity: 0.05
+        angular_granularity: 0.025
+        transform_tolerance: 0.2
+        xy_goal_tolerance: 0.25
+        trans_stopped_velocity: 0.25
+        short_circuit_trajectory_evaluation: true
+        stateful: true
+        critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
+        BaseObstacle.scale: 0.02
+        PathAlign.scale: 32.0
+        GoalAlign.scale: 24.0
+        PathAlign.forward_point_distance: 0.1
+        GoalAlign.forward_point_distance: 0.1
+        PathDist.scale: 32.0
+        GoalDist.scale: 24.0
+        RotateToGoal.scale: 32.0
+        RotateToGoal.slowing_factor: 5.0
+        RotateToGoal.lookahead_time: -1.0
+
+  # NOTE: no map_server, no amcl -- slam_toolbox already provides live
+  # localization (map -> odom) per robot; navigation_launch.py's own
+  # lifecycle manager only tracks the nodes below.
+
+  local_costmap:
+    local_costmap:
+      ros__parameters:
+        use_sim_time: true
+        # Local costmap stays in each robot's own odom frame -- this is
+        # unaffected by the multi-robot merged-map setup.
+        global_frame: odom
+        robot_base_frame: base_footprint
+        update_frequency: 5.0
+        publish_frequency: 2.0
+        rolling_window: true
+        width: 3
+        height: 3
+        resolution: 0.05
+        robot_radius: 0.22
+        plugins: ["obstacle_layer", "inflation_layer"]
+        obstacle_layer:
+          plugin: "nav2_costmap_2d::ObstacleLayer"
+          enabled: true
+          observation_sources: scan
+          scan:
+            topic: scan
+            max_obstacle_height: 2.0
+            clearing: true
+            marking: true
+            data_type: "LaserScan"
+        inflation_layer:
+          plugin: "nav2_costmap_2d::InflationLayer"
+          cost_scaling_factor: 3.0
+          inflation_radius: 0.55
+        always_send_full_costmap: true
+
+  global_costmap:
+    global_costmap:
+      ros__parameters:
+        use_sim_time: true
+        # This is the key difference from a standard single-robot setup:
+        # our shared reference frame is global_odom (see the launch-file
+        # notes on the static global_odom -> map anchor), not the usual
+        # single-robot 'map' frame.
+        global_frame: global_odom
+        robot_base_frame: base_footprint
+        update_frequency: 1.0
+        publish_frequency: 1.0
+        rolling_window: false
+        resolution: 0.05
+        robot_radius: 0.22
+        track_unknown_space: true
+        plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+        obstacle_layer:
+          plugin: "nav2_costmap_2d::ObstacleLayer"
+          enabled: true
+          observation_sources: scan
+          scan:
+            topic: scan
+            max_obstacle_height: 2.0
+            clearing: true
+            marking: true
+            data_type: "LaserScan"
+        static_layer:
+          plugin: "nav2_costmap_2d::StaticLayer"
+          # Relative topic name: navigation_launch.py's RewrittenYaml
+          # mechanism turns this into /robotN/merged_map automatically once
+          # `namespace` is passed to the include -- do NOT hard-code a
+          # leading slash here (see this repo's earlier notes on
+          # slam_toolbox's /tf, /scan, /map bugs: an absolute name bypasses
+          # namespacing entirely).
+          map_topic: merged_map
+          # CRITICAL: map_merge_server publishes with TRANSIENT_LOCAL
+          # durability. Without this flag, StaticLayer's own subscription
+          # QoS won't match it, and this costmap will silently never
+          # receive any map data -- the exact same QoS-mismatch bug we hit
+          # earlier with RViz.
+          map_subscribe_transient_local: true
+          subscribe_to_updates: false
+        inflation_layer:
+          plugin: "nav2_costmap_2d::InflationLayer"
+          cost_scaling_factor: 3.0
+          inflation_radius: 0.55
+        always_send_full_costmap: true
+
+  planner_server:
+    ros__parameters:
+      use_sim_time: true
+      planner_plugins: ["GridBased"]
+      GridBased:
+        plugin: "nav2_navfn_planner::NavfnPlanner"
+        tolerance: 0.5
+        use_astar: false
+        allow_unknown: true
+
+  smoother_server:
+    ros__parameters:
+      use_sim_time: true
+      smoother_plugins: ["simple_smoother"]
+      simple_smoother:
+        plugin: "nav2_smoother::SimpleSmoother"
+        tolerance: 1.0e-10
+        max_its: 1000
+        do_refinement: true
+
+  behavior_server:
+    ros__parameters:
+      use_sim_time: true
+      local_costmap_topic: local_costmap/costmap_raw
+      global_costmap_topic: global_costmap/costmap_raw
+      local_footprint_topic: local_costmap/published_footprint
+      global_footprint_topic: global_costmap/published_footprint
+      costmap_topic: local_costmap/costmap_raw
+      footprint_topic: local_costmap/published_footprint
+      cycle_frequency: 10.0
+      behavior_plugins: ["spin", "backup", "drive_on_heading", "wait"]
+      spin:
+        plugin: "nav2_behaviors::Spin"
+      backup:
+        plugin: "nav2_behaviors::BackUp"
+      drive_on_heading:
+        plugin: "nav2_behaviors::DriveOnHeading"
+      wait:
+        plugin: "nav2_behaviors::Wait"
+      global_frame: odom
+      robot_base_frame: base_footprint
+      transform_tolerance: 0.1
+      simulate_ahead_time: 2.0
+      max_rotational_vel: 1.0
+      min_rotational_vel: 0.4
+      rotational_acc_lim: 3.2
+
+  velocity_smoother:
+    ros__parameters:
+      use_sim_time: true
+      smoothing_frequency: 20.0
+      scale_velocities: false
+      feedback: "OPEN_LOOP"
+      max_velocity: [0.26, 0.0, 1.0]
+      min_velocity: [-0.26, 0.0, -1.0]
+      max_accel: [2.5, 0.0, 3.2]
+      max_decel: [-2.5, 0.0, -3.2]
+      odom_topic: odom
+      odom_duration: 0.1
+      deadband_velocity: [0.0, 0.0, 0.0]
+      velocity_timeout: 1.0

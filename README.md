@@ -1,5 +1,7 @@
 # explo_multirobot
 
+Inspired from [AniArka/Autonomous-Explorer-and-Mapper-ros2-nav2](https://github.com/AniArka/Autonomous-Explorer-and-Mapper-ros2-nav2/tree/main) package.
+
 Nav2-based navigation and frontier exploration on top of the fused map produced by [map_merge_server](https://github.com/R1leMargoulin/map_merge_server). Each robot runs its own Nav2 stack (no `map_server`/`amcl` — `slam_toolbox` already provides live localization) and its own frontier-exploration node.
 
 **Depends on [map_merge_server](https://github.com/R1leMargoulin/map_merge_server) already publishing `merged_map` for each robot,** and currently on [multi_robot_slam_toolbox_simulation](https://github.com/R1leMargoulin/multi_robot_slam_toolbox_simulation)'s shared `global_odom` TF anchor. The second dependencie is currently being removed/modified for real robot deployement. (I will make a package with a launch for a correct slam toolbox without gazebo simulation)

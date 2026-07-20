@@ -166,11 +166,11 @@ ros2 run tf2_ros static_transform_publisher --ros-args \
 ```
 
 **Map merge server**
-
+Keep the same init pose (than the one from the previous step) as map origin.
 ```bash
 ros2 run map_merge_server map_merge_server_node --ros-args \
-  -p map_origin_x:=0.0 \
-  -p map_origin_y:=0.0 \
+  -p map_origin_x:=0.5 \
+  -p map_origin_y:=0.5 \
   -p map_origin_theta:=0.0 \
   -p merged_frame_id:=map
 ```

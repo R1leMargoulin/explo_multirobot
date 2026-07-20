@@ -165,7 +165,8 @@ ros2 run tf2_ros static_transform_publisher --ros-args \
   --frame-id global_odom --child-frame-id map
 ```
 
-**Map merge server**
+**Map merge server**  
+
 Keep the same init pose (than the one from the previous step) as map origin.
 ```bash
 ros2 run map_merge_server map_merge_server_node --ros-args \
@@ -175,7 +176,8 @@ ros2 run map_merge_server map_merge_server_node --ros-args \
   -p merged_frame_id:=map
 ```
 
-**Nav2 **
+**Nav2**  
+
 (change the path of the config depending on your workspace location)
 
 ```bash

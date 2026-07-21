@@ -77,22 +77,18 @@ You can place those files in a `~/zenoh_conf/` folder.
 {
   plugins: {
     ros2dds: {
-      namespace: "/robot1",
       allow: {
-        publishers: ["/merged_map"],
-        service_servers: ["/merge_map"],
+        service_servers: [".*merge_map$"],
+        service_clients: [".*merge_map$"],
       },
-      ros_localhost_only: true,
     },
   },
   mode: "peer",
-  listen: {
-    endpoints: ["tcp/0.0.0.0:7447"],
-  },
+  listen: { endpoints: ["tcp/0.0.0.0:7447"] },
   connect: {
     // Add every machine you want to share these topics/services with
     // (other robots, and/or the PC if you want to see the merged map there).
-    endpoints: ["tcp/<PC_OR_OTHER_ROBOT_IP>:7447"],
+    endpoints: ["tcp/<PC_OR_OTHER_ROBOT_IP>:7447", "tcp/<PC_OR_OTHER_ROBOT_IP>:7447"],
   },
 }
 ```

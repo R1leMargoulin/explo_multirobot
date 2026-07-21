@@ -167,9 +167,10 @@ ros2 run tf2_ros static_transform_publisher --ros-args \
 
 **Map merge server**  
 
-Keep the same init pose (than the one from the previous step) as map origin.
+Keep the same init pose (than the one from the previous step) as map origin., change the name of the robot as desired. it will publish the service as `/<robot_name>/merge_map`
 ```bash
 ros2 run map_merge_server map_merge_server_node --ros-args \
+  -p -p robot_name:=robot1 \
   -p map_origin_x:=0.5 \
   -p map_origin_y:=0.5 \
   -p map_origin_theta:=0.0 \
@@ -202,6 +203,7 @@ To sync this robot's fused map with a peer robot (once its own bridge is also up
 
 ```bash
 ros2 run map_merge_server merge_client_example --ros-args \
+  -p -p robot_name:=robot1 \
   -p peer_service:=/robot2/merge_map \
   -p sync_period_sec:=5.0
 ```

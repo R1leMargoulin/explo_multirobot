@@ -165,6 +165,7 @@ ros2 run tf2_ros static_transform_publisher --ros-args \
 
 Keep the same init pose (than the one from the previous step) as map origin., change the name of the robot as desired. it will publish the service as `/<robot_name>/merge_map`
 ```bash
+#TO CHECK : -> au final ca j'ai mis a zero et je met global_odom en merged id frame, ca donne un truc plus cohérent.
 ros2 run map_merge_server map_merge_server_node --ros-args \
   -p -p robot_name:=robot1 \
   -p map_origin_x:=0.5 \

@@ -16,6 +16,6 @@ The [Getting started](getting_started.md) guide, explains how to run everything 
 For a robot namespaced `robotX`:
 - Nav2's global costmap subscribes to `/robotX/merged_map`.
 - The explorer publishes navigation goals through `/robotX/navigate_to_pose`.
-- Both rely on the TF chain `global_odom → map → odom → base_footprint` already being live for `robotX`.
+- Both rely on the TF chain `world → map → odom → base_footprint` already being live for `robotX`.
 
 ---

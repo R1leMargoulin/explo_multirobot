@@ -60,7 +60,7 @@ def launch_setup(context: LaunchContext, *args, **kwargs):
         arguments=[
             '--x', x_pose, '--y', y_pose, '--z', '0',
             '--roll', '0', '--pitch', '0', '--yaw', yaw_pose,
-            '--frame-id', 'global_odom',
+            '--frame-id', 'world',
             '--child-frame-id', 'map',
         ],
     ))
@@ -90,7 +90,7 @@ def launch_setup(context: LaunchContext, *args, **kwargs):
             'map_origin_x': float(x_pose),
             'map_origin_y': float(y_pose),
             'map_origin_theta': float(yaw_pose),
-            'merged_frame_id': 'global_odom',
+            'merged_frame_id': 'world',
         }],
     ))
 
@@ -173,7 +173,7 @@ def launch_setup(context: LaunchContext, *args, **kwargs):
         output='screen',
         remappings=TF_REMAPPINGS,
         parameters=[{
-            'global_frame': 'global_odom',
+            'global_frame': 'world',
             'robot_base_frame': 'base_footprint',
             'exploration_period_sec': float(sync_period_sec),
             'use_sim_time': use_sim_time,

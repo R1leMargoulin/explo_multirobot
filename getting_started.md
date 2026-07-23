@@ -149,7 +149,7 @@ ros2 launch limo_bringup limo_slam_box.launch.py
 **Global reference frame anchor**
 
 This robot's known pose in the frame shared across robots
-(`global_odom -> map`). Adjust `--x --y --yaw` to this robot's actual
+(`world -> map`). Adjust `--x --y --yaw` to this robot's actual
 starting pose relative to the shared origin.
 
 ```bash
@@ -158,7 +158,7 @@ ros2 run tf2_ros static_transform_publisher --ros-args \
   -r /tf:=tf -r /tf_static:=tf_static \
   -p use_sim_time:=false \
   -- --x 0.5 --y 0.5 --z 0 --roll 0 --pitch 0 --yaw 0.0 \
-  --frame-id global_odom --child-frame-id map
+  --frame-id world --child-frame-id map
 ```
 
 **Map merge server**  
@@ -170,7 +170,7 @@ ros2 run map_merge_server map_merge_server_node --ros-args \
   -p map_origin_x:=0.5 \
   -p map_origin_y:=0.5 \
   -p map_origin_theta:=0.0 \
-  -p merged_frame_id:=global_odom
+  -p merged_frame_id:=world
 ```
 
 **Nav2**  

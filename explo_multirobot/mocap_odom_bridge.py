@@ -25,7 +25,7 @@ class MocapOdomBridge(Node):
 
         self.declare_parameter('tracker_name', 'robot1')
         self.declare_parameter('base_frame', 'base_link')
-        self.declare_parameter('world_frame', 'global_odom')
+        self.declare_parameter('world_frame', 'world')
         self.declare_parameter('odom_frame', 'odom')
 
         tracker_name = self.get_parameter('tracker_name').value

@@ -26,7 +26,7 @@ setup(
     entry_points={
         'console_scripts': [
             'explorer_node = explo_multirobot.explorer_node:main',
-            'mocap_odom_bridge = explo_multirobot.mocap_odom_bridge:main',
+            'mocap_pose_bridge = explo_multirobot.mocap_pose_bridge:main',
         ],
     },
 )

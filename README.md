@@ -1,13 +1,13 @@
 # explo_multirobot
 
-Nav2-based navigation and frontier exploration on top of the fused map produced by [map_merge_server](https://github.com/R1leMargoulin/map_merge_server). Adapted for multi-robot systems. Each robot runs its own Nav2 stack (no `map_server`/`amcl` — `slam_toolbox` already provides live localization) and its own frontier-exploration node.
+Nav2-based navigation and frontier exploration on top of the fused map produced by [map_merge_server](https://github.com/R1leMargoulin/map_merge_server). Adapted for multi-robot systems. Each robot runs its own Nav2 stack (no `map_server`/`amcl` — `slam_toolbox` or `cartographer` already provides live localization) and its own frontier-exploration node.
 
 **Depends on [map_merge_server](https://github.com/R1leMargoulin/map_merge_server) already publishing `merged_map` for each robot,**.
 
 ---
 
 ## Getting started
-The [Getting started](getting_started.md) guide, explains how to run everything on a Agilex LIMO robot.
+The [Getting started](getting_started.md) guide, explains how to run everything on a Agilex LIMO ROS2 robot.
 
 ---
 

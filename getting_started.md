@@ -150,7 +150,7 @@ ros2 launch limo_bringup limo_slam_box.launch.py
 
 This robot's known pose in the frame shared across robots
 (`world -> map`). Adjust `--x --y --yaw` to this robot's actual
-starting pose relative to the shared origin.
+starting pose relative to the shared origin (here, we set it to (0.5,0.5, 0) for the example).
 
 ```bash
 ros2 run tf2_ros static_transform_publisher --ros-args \
@@ -163,7 +163,7 @@ ros2 run tf2_ros static_transform_publisher --ros-args \
 
 **Map merge server**  
 
-Keep the same init pose (than the one from the previous step) as map origin., change the name of the robot as desired. it will publish the service as `/<robot_name>/merge_map`
+Keep the same init pose (than the one from the previous step) as map origin., change the name of the robot as desired. it will publish the service as `/<robot_name>/merge_map`. don't forget to place the right robot name.
 ```bash
 ros2 run map_merge_server map_merge_server_node --ros-args \
   -p -p robot_name:=robot1 \
@@ -172,6 +172,7 @@ ros2 run map_merge_server map_merge_server_node --ros-args \
   -p map_origin_theta:=0.0 \
   -p merged_frame_id:=world
 ```
+This service is the only one that will be accessible via zenoh due to our configuration yaml file.
 
 **Nav2**  
 
@@ -205,5 +206,15 @@ ros2 run map_merge_server merge_client_example --ros-args \
 ```
 
 `peer_service` accepts a comma-separated list if you want this robot to gossip with more than one peer (e.g. `"/robot2/merge_map,/robot3/merge_map"`).
+
+This is an example program that sync the robots merged_map by periodically calling the service.
+
+
+
+
+# Contacts
+If you have questions or suggestions, feel free to reach me out, you can find email addresses below or you can find my socials on my github profile.
+Erwan Martin : erwan.martin666@gmail.com | erwan.martin@univ-lille.fr
+
 
 ---

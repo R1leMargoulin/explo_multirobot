@@ -7,7 +7,7 @@ Nav2-based navigation and frontier exploration on top of the fused map produced 
 ---
 # Acknowledgement
 This work is built on top of what several interns provided during their internship @ CRIStAL Laboratory.
-- Raphael CAPELLE
+- Raphael Capelle
 - Arthur Goddefroy
 
 The exploration program is inspired from the implementation (for single robots) of Arka Gosh (AniArka) : (https://github.com/AniArka/Autonomous-Explorer-and-Mapper-ros2-nav2)

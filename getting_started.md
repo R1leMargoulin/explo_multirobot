@@ -132,7 +132,7 @@ You should `export ROS_LOCALHOST_ONLY=1` on each terminal, you can eventually pl
 
 ```bash
 sudo ip link set lo multicast on
-zenoh-bridge-ros2dds -c zenoh_conf.json5
+zenoh-bridge-ros2dds -c ~/zenoh_conf/zenoh_conf.json5
 ```
 
 **Base robot bringup**

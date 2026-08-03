@@ -8,6 +8,9 @@ from launch.launch_context import LaunchContext
 from launch_ros.actions import Node
 
 
+#This is not a working version, it is better for now to launch everything by hand.
+
+
 TF_REMAPPINGS = [('/tf', 'tf'), ('/tf_static', 'tf_static')]
 
 # Only the Nav2 nodes actually needed for NavigateToPose-based exploration.

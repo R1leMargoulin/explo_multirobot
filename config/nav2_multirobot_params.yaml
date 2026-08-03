@@ -1,15 +1,4 @@
 /**:
-  # NOTE: everything is wrapped under the /** wildcard namespace key.
-  # This is required by rcl_yaml_param_parser's documented format
-  # (<node_namespace_string>: <node_name>: ros__parameters: ...) for
-  # NAMESPACED nodes -- without it, simple top-level parameters (like
-  # global_frame, use_sim_time) still loaded fine, but deeply nested ones
-  # (FollowPath.critics, local_costmap's own `plugins` list) were silently
-  # dropped once a node had any ROS namespace at all (e.g. /robot1/...),
-  # causing "No critics defined for FollowPath" and costmap plugins
-  # falling back to Nav2's internal defaults. /** matches any namespace
-  # (including /robot1, /robot2, or none), so one shared file works for
-  # every robot.
   bt_navigator:
     ros__parameters:
       use_sim_time: true
@@ -123,11 +112,7 @@
     global_costmap:
       ros__parameters:
         use_sim_time: true
-        # This is the key difference from a standard single-robot setup:
-        # our shared reference frame is global_odom (see the launch-file
-        # notes on the static global_odom -> map anchor), not the usual
-        # single-robot 'map' frame.
-        global_frame: global_odom
+        global_frame: world
         robot_base_frame: base_footprint
         update_frequency: 1.0
         publish_frequency: 1.0
@@ -148,18 +133,8 @@
             data_type: "LaserScan"
         static_layer:
           plugin: "nav2_costmap_2d::StaticLayer"
-          # Relative topic name: navigation_launch.py's RewrittenYaml
-          # mechanism turns this into /robotN/merged_map automatically once
-          # `namespace` is passed to the include -- do NOT hard-code a
-          # leading slash here (see this repo's earlier notes on
-          # slam_toolbox's /tf, /scan, /map bugs: an absolute name bypasses
-          # namespacing entirely).
           map_topic: merged_map
-          # CRITICAL: map_merge_server publishes with TRANSIENT_LOCAL
-          # durability. Without this flag, StaticLayer's own subscription
-          # QoS won't match it, and this costmap will silently never
-          # receive any map data -- the exact same QoS-mismatch bug we hit
-          # earlier with RViz.
+          
           map_subscribe_transient_local: true
           subscribe_to_updates: false
         inflation_layer:

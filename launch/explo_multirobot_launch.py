@@ -37,12 +37,6 @@ def generate_launch_description():
                     'exploration_period_sec': exploration_period,
                     'use_sim_time': True,
                 }],
-                # tf2_ros's TransformListener subscribes on the absolute
-                # /tf and /tf_static topics internally -- PushRosNamespace
-                # alone does not affect it (same recurring issue already
-                # fixed elsewhere in this project for slam_toolbox,
-                # robot_state_publisher, etc.). Without this explicit
-                # remap, this node's TF buffer stays permanently empty.
                 remappings=[('/tf', 'tf'), ('/tf_static', 'tf_static')],
             ),
         ])

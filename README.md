@@ -10,7 +10,7 @@ This work is built on top of what several interns provided during their internsh
 - Raphael Capelle
 - Arthur Goddefroy
 
-The exploration program is inspired from the implementation (for single robots) of Arka Gosh (AniArka) : (https://github.com/AniArka/Autonomous-Explorer-and-Mapper-ros2-nav2)
+The exploration program is built on top of the implementation (for single robots) of Arka Gosh (AniArka) : (https://github.com/AniArka/Autonomous-Explorer-and-Mapper-ros2-nav2)
 
 ---
 

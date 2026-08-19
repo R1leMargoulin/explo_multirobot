@@ -63,7 +63,7 @@ class ExplorerNode(Node):
     def _update_robot_position(self) -> bool:
         """
         robot's current pose in the shared global frame and
-        convert it into the merged map's grid indices. 
+        convert it into the merged map's grid indices.
         Returns False if the transform isn't available yet.
         """
         try:
@@ -88,19 +88,26 @@ class ExplorerNode(Node):
         self.robot_position = (row, col)
         return True
 
-    def navigate_to(self, x, y):
-        """Send navigation goal to Nav2."""
+    def navigate_to(self, x, y, yaw=None):
+        """
+        Send navigation goal to Nav2.
+        """
         goal_msg = PoseStamped()
         goal_msg.header.frame_id = self._global_frame
         goal_msg.header.stamp = self.get_clock().now().to_msg()
         goal_msg.pose.position.x = x
         goal_msg.pose.position.y = y
-        goal_msg.pose.orientation.w = 1.0
+
+        if yaw is not None:
+            goal_msg.pose.orientation.z = float(np.sin(yaw / 2.0))
+            goal_msg.pose.orientation.w = float(np.cos(yaw / 2.0))
+        else:
+            goal_msg.pose.orientation.w = 1.0
 
         nav_goal = NavigateToPose.Goal()
         nav_goal.pose = goal_msg
 
-        self.get_logger().info(f"Navigating to goal: x={x}, y={y}")
+        self.get_logger().info(f"Navigating to goal: x={x}, y={y}, yaw={yaw}")
 
         self.nav_to_pose_client.wait_for_server()
 
@@ -130,9 +137,12 @@ class ExplorerNode(Node):
         frontiers = []
         rows, cols = map_array.shape
 
+        
+        free_threshold = 50
+
         for r in range(1, rows - 1):
             for c in range(1, cols - 1):
-                if map_array[r, c] == 0:  # Free cell
+                if 0 <= map_array[r, c] < free_threshold:
                     neighbors = map_array[r-1:r+2, c-1:c+2].flatten()
                     if -1 in neighbors:
                         frontiers.append((r, c))
@@ -191,7 +201,13 @@ class ExplorerNode(Node):
         goal_y = chosen_frontier[0] * self.map_data.info.resolution \
             + self.map_data.info.origin.position.y
 
-        self.navigate_to(goal_x, goal_y)
+        # Face the direction of travel
+        yaw = float(np.arctan2(
+            chosen_frontier[0] - self.robot_position[0],
+            chosen_frontier[1] - self.robot_position[1],
+        ))
+
+        self.navigate_to(goal_x, goal_y, yaw)
 
 
 def main(args=None):

@@ -32,6 +32,8 @@ After merge :
 ### multi-robot interactions
 ROS2 can be tricky with multi robots, especially when it comes about communications. The most common issue is that every robot is publishing it's map, sensors, and any other information continuously. This causes a network overload that breaks entirely the system. 
 
+An other issue is that manufacturers don't always take into account multi-robot use-case and hard-code the topics name, making difficult for the user to set proper namespaces.
+
 This is why we made the choice to isolate every ROS component for each robot, and only chose what has to go in/out for the robots of the fleet.
 The only thing that the robots needs to coordinate i our case is the **map_merge** service. Then we pass the robot on localhost only mode with the environment variable `ROS_LOCALHOST_ONLY` (set to 1). And we use **zenoh** for communication purpose.
 
@@ -59,7 +61,7 @@ With a json configuration file as the one following, we can easily filter the el
 }
 ```
 
-This solves the network overload problem for ROS2 multi-robot implementations.
+This solves the network overload problem for ROS2 multi-robot implementations. It also remove the need to use a namespace for every node, so we can only namespace the node/topics/sevices we want to share on zenoh.
 
 ## Overall
 This figure represents the overall process:

@@ -15,7 +15,10 @@ The exploration program is built on top of the implementation (for single robots
 ---
 
 ## Getting started
-The [Getting started](getting_started.md) guide, explains how to run everything on a Agilex LIMO ROS2 robot.
+
+- The [Theory](theory.md), explain theorically what is made without implementation or commands details. A **short video demo** is also available.
+
+- The [Getting started](getting_started.md) guide, explains how to run everything on a Agilex LIMO ROS2 robot.
 
 ---
 

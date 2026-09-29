@@ -19,7 +19,7 @@ We re-used as a base, the content of the package from of Arka Gosh (AniArka) : (
 We launch a **map_merge** server, on the node we made : [map_merge_server](https://github.com/R1leMargoulin/map_merge_server). More details about merging can be found on that repo, including the limitations.
 
 This node create a map **merged_map** on a global frame **world** we make for the robots. The global frame is created to make the robot calculate on the same origin.
-Otherwise, we would have feed the shift of the two original maps, with obstacles duplication.
+Otherwise, we would have feel the shift of the two original maps, with obstacles duplication.
 
 Here is an example of map merging : 
 

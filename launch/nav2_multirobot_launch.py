@@ -60,15 +60,6 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     for name in ROBOT_NAMES:
-        # Costmap layer plugins (like StaticLayer) create their OWN
-        # sub-namespace based on the layer name (e.g. "global_costmap"),
-        # so a relative map_topic like "merged_map" resolves to
-        # /robotN/global_costmap/merged_map -- NOT /robotN/merged_map,
-        # where map_merge_server actually publishes. Nothing publishes to
-        # the wrongly-resolved topic, hence "no map received". Fix: give
-        # planner_server (which hosts global_costmap) an absolute,
-        # per-robot-resolved override for this one parameter, the same
-        # technique used for bt_navigator's BT xml path above.
         costmap_override_fd, costmap_override_path = tempfile.mkstemp(
             suffix=f'_{name}_global_costmap_override.yaml')
         with os.fdopen(costmap_override_fd, 'w') as f:

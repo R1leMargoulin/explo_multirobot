@@ -65,7 +65,21 @@ This solves the network overload problem for ROS2 multi-robot implementations.
 This figure represents the overall process:
 <img width="1920" height="1080" alt="schematics explain" src="https://github.com/user-attachments/assets/d84988e0-1f7f-4d8a-907e-da072fe66a17" />
 
+On the left part, we can see the whole blue rectangle as a Limo. In the red part, the ROS2 component (navigation, control, decision) are isolated. The zenoh bridge which is hybrid can communicate, expose topics/services and interact with topics/services exposed by other robots. This is then the only communication channel for robots.
 
 
 # Video
 Quick demo video
+
+https://github.com/user-attachments/assets/41486e80-f545-44c3-babf-f17e4a545ebb
+
+**Limitations :**
+On the demo, I realize that I gave the possibility to the robot to go backward on the navigation. That is a mistake, because they can only sense what is at their front side. 
+This will be corrected soon and the video will then be updated.
+However, we can clearly see the two robots operating simultaneously and merge their maps. one other limitations we can see as mentionned in the "merge_map_server" repo, is that **robots see themselves as obstacles, which leads to ghost obstacle phenomenon**.
+
+
+For any questions or suggestions, please contact : erwan.martin@univ-lille.fr
+
+
+

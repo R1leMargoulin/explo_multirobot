@@ -20,6 +20,8 @@ The exploration program is built on top of the implementation (for single robots
 
 - The [Getting started](getting_started.md) guide, explains how to run everything on a Agilex LIMO ROS2 robot.
 
+Warning : The launchs file were for tests in simulation, the real robot implementation has currently no global launch file.
+
 ---
 
 ## explorer node explaination : for a robot named `robotX`

@@ -76,7 +76,7 @@ Quick demo video
 https://github.com/user-attachments/assets/41486e80-f545-44c3-babf-f17e4a545ebb
 
 **Limitations :**
-On the demo, I realize that I gave the possibility to the robot to go backward on the navigation. That is a mistake, because they can only sense what is at their front side. 
+On the demo, I realize that I gave the possibility to the robot to go backward on the navigation (wrong manipulation of the nav2 config file). That is a mistake, because they can only sense what is at their front side. 
 This will be corrected soon and the video will then be updated.
 However, we can clearly see the two robots operating simultaneously and merge their maps. one other limitations we can see as mentionned in the "merge_map_server" repo, is that **robots see themselves as obstacles, which leads to ghost obstacle phenomenon**.
 
